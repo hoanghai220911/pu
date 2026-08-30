@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Pictures - Đăng ký</title>
+
+    <!-- Google Font: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Google Material Symbols (Icons) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-app-compat.min.js"
+        integrity="sha512-gCJuoyvPlJMaTPkYPfyfEt1KYPvoEE9PgGHlOU+Qtg+kLbBfEbiiim4PDj2ATWLc6BN0irZnNbdgzCtX53vjXQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-firestore-compat.min.js"
+        integrity="sha512-Xxpv+NpwNyir+77oEME5XeixRoRLrI4eY0bBZSMHgWLEFbc0f+JP4Nax3t/qDuYg1hgWrSl8pUapb+AO5Lp1jA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-storage-compat.min.js"
+        integrity="sha512-l/ieVoEShBQI9lKOdMY4AAV9rzEE5YHKF8XB4m3Qn3DtK9AhYSOgyDWrL2XH1lhKS4Fde+PNoDiBoT7UhcP23A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-auth-compat.min.js" 
+        integrity="sha512-PgwIBKz/MWPvQvKq7MUWB5x5aCyiiXTnAtbUGqbBvylcD/oASXh8wap5g1lWpzPmNraLXWzuWx8bkZ+reKYoyQ==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Firebase configuration script -->
+    <script src="./firebase-config.js"></script>
+
+    <!-- CSS chung -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="m3-surface-container">
+        <!-- Header Real Pictures -->
+        <div class="m3-header">
+            <span class="material-symbols-outlined brand-icon">photo_camera_back</span>
+            <h1 class="m3-headline">Real Pictures</h1>
+            <p class="m3-subhead">Stock Photo Library</p>
+        </div>
+
+        <h2 class="m3-title-login">Tạo tài khoản mới</h2>
+
+        <!-- Form Đăng ký -->
+        <form class="m3-form" onsubmit="return false;">
+            <!-- Email -->
+            <div class="m3-text-field">
+                <span class="material-symbols-outlined field-icon">mail</span>
+                <input type="email" id="txt-email" required placeholder=" ">
+                <label for="txt-email">Email</label>
+            </div>
+
+            <!-- Password -->
+            <div class="m3-text-field">
+                <span class="material-symbols-outlined field-icon">lock</span>
+                <input type="password" id="txt-password" required placeholder=" ">
+                <label for="txt-password">Mật khẩu</label>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="m3-text-field">
+                <span class="material-symbols-outlined field-icon">lock_reset</span>
+                <input type="password" id="txt-confirm-password" required placeholder=" ">
+                <label for="txt-confirm-password">Xác nhận mật khẩu</label>
+            </div>
+
+            <!-- Button Register -->
+            <button type="button" class="m3-button-primary" id="registerBtn">
+                <span class="material-symbols-outlined">person_add</span>
+                <span>Tạo tài khoản</span>
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="m3-footer">
+            <span>Đã có tài khoản?</span>
+            <a href="./login.html" class="m3-link">Đăng nhập</a>
+        </div>
+    </div>
+
+    <!-- Script xử lý đăng ký -->
+    <script src="./signup.js"></script>
+</body>
+
+</html>

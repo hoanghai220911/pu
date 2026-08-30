@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Pictures - Trang Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="./firebase-config.js"></script>
+
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid var(--md-sys-color-outline-variant); text-align: left; }
+        .btn-danger { background: #ba1a1a; color: #fff; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; }
+        .btn-warning { background: #e28700; color: #fff; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="m3-dashboard-layout">
+        <header class="m3-top-app-bar">
+            <div class="brand-info">
+                <span class="material-symbols-outlined brand-icon">admin_panel_settings</span>
+                <div>
+                    <h1 class="m3-headline">Admin Dashboard</h1>
+                    <p class="m3-subhead">Quản lý Hệ thống</p>
+                </div>
+            </div>
+            <a href="./index.html" class="m3-button-secondary">Trở về Trang chủ</a>
+        </header>
+
+        <main>
+            <!-- Quản lý Người Dùng -->
+            <h2 class="welcome-title">1. Quản lý Người Dùng (Khóa/Mở Khóa)</h2>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="user-management-list"></tbody>
+            </table>
+
+            <!-- Quản lý Bài Đăng -->
+            <h2 class="welcome-title" style="margin-top: 40px;">2. Quản lý Hình Ảnh (Xóa)</h2>
+            <div id="admin-photo-grid" class="m3-grid"></div>
+        </main>
+    </div>
+
+    <script src="./admin.js"></script>
+</body>
+</html>

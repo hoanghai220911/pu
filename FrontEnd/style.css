@@ -1,0 +1,370 @@
+/* ==========================================
+   MATERIAL DESIGN 3 EXPRESSIVE SYSTEM TOKENS
+   (Real Pictures - Camera & Blue Palette)
+   ========================================== */
+:root {
+    /* Color Tokens (Photo Studio M3 Cool Palette) */
+    --md-sys-color-primary: #a8c7fa;
+    --md-sys-color-on-primary: #003052;
+    --md-sys-color-primary-container: #004a77;
+    --md-sys-color-on-primary-container: #c2e7ff;
+    
+    --md-sys-color-surface: rgba(18, 20, 24, 0.78);
+    --md-sys-color-surface-container-high: rgba(30, 34, 42, 0.88);
+    --md-sys-color-on-surface: #e2e2e6;
+    --md-sys-color-on-surface-variant: #c4c6cf;
+    
+    --md-sys-color-outline: #8e919a;
+    --md-sys-color-outline-variant: #44474f;
+
+    /* Typography Token */
+    --md-sys-typescale-font: 'Montserrat', sans-serif;
+
+    /* Shape Tokens (Expressive Curves) */
+    --md-shape-corner-extra-large: 28px;
+    --md-shape-corner-large: 16px;
+    --md-shape-corner-full: 100px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--md-sys-typescale-font);
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Ảnh nền không gian ống kính máy ảnh nghệ thuật */
+    background: linear-gradient(rgba(10, 12, 16, 0.5), rgba(10, 12, 16, 0.75)),
+                url('https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1600') no-repeat center center/cover;
+    padding: 20px;
+}
+
+/* ==========================================
+   M3 EXPRESSIVE CONTAINER (CARD)
+   ========================================== */
+.m3-surface-container {
+    background: var(--md-sys-color-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--md-shape-corner-extra-large);
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 410px;
+    box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.6),
+                0 4px 12px 0 rgba(0, 0, 0, 0.4);
+    color: var(--md-sys-color-on-surface);
+    animation: fadeIn 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ==========================================
+   HEADER & TYPOGRAPHY
+   ========================================== */
+.m3-header {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.brand-icon {
+    font-size: 42px;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 4px;
+}
+
+.m3-headline {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+.m3-subhead {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--md-sys-color-primary);
+    margin-top: 2px;
+}
+
+.m3-title-login {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-bottom: 28px;
+    letter-spacing: 0.3px;
+}
+
+/* ==========================================
+   M3 OUTLINED TEXT FIELD
+   ========================================== */
+.m3-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.m3-text-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.m3-text-field .field-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--md-sys-color-outline);
+    font-size: 20px;
+    pointer-events: none;
+    transition: 0.2s color ease;
+}
+
+.m3-text-field input {
+    width: 100%;
+    height: 56px;
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-shape-corner-large);
+    padding: 0 16px 0 48px;
+    color: var(--md-sys-color-on-surface);
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.m3-text-field label {
+    position: absolute;
+    left: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--md-sys-color-outline);
+    font-size: 14px;
+    font-weight: 500;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    background: transparent;
+}
+
+/* Input Focus & Filled State */
+.m3-text-field input:focus,
+.m3-text-field input:not(:placeholder-shown) {
+    border-color: var(--md-sys-color-primary);
+    border-width: 2px;
+    padding-top: 14px;
+}
+
+.m3-text-field input:focus ~ label,
+.m3-text-field input:not(:placeholder-shown) ~ label {
+    top: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--md-sys-color-primary);
+}
+
+.m3-text-field input:focus ~ .field-icon {
+    color: var(--md-sys-color-primary);
+}
+
+/* ==========================================
+   M3 BUTTON (FILLED PILL SHAPE)
+   ========================================== */
+.m3-button-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 52px;
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border: none;
+    border-radius: var(--md-shape-corner-full);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.m3-button-primary:hover {
+    background-color: #005c93;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    transform: translateY(-1px);
+}
+
+.m3-button-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.m3-button-primary .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+.m3-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.m3-link {
+    color: var(--md-sys-color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 4px;
+    transition: color 0.2s;
+}
+
+.m3-link:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   DASHBOARD / MAIN PAGE EXTENSION
+   ========================================== */
+.m3-dashboard-layout {
+    width: 100%;
+    max-width: 1100px;
+    min-height: 85vh;
+    background: var(--md-sys-color-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--md-shape-corner-extra-large);
+    padding: 32px;
+    box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.6);
+    color: var(--md-sys-color-on-surface);
+}
+
+.m3-top-app-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.brand-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.brand-info .m3-headline {
+    text-align: left;
+}
+
+.user-profile-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--md-sys-color-surface-container-high);
+    padding: 6px 16px;
+    border-radius: var(--md-shape-corner-full);
+    border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.user-email {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--md-sys-color-primary);
+}
+
+.account-icon {
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.nav-btn {
+    text-decoration: none;
+    padding: 0 24px;
+}
+
+/* Secondary Logout Button */
+.m3-button-secondary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--md-sys-color-primary);
+    color: var(--md-sys-color-primary);
+    padding: 6px 14px;
+    border-radius: var(--md-shape-corner-full);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.m3-button-secondary:hover {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+/* Auth Buttons Group */
+.auth-buttons-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Dashboard Content Grid */
+.welcome-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.m3-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.m3-feature-card {
+    background: var(--md-sys-color-surface-container-high);
+    border-radius: var(--md-shape-corner-large);
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.m3-feature-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--md-sys-color-primary);
+}
+
+.card-icon {
+    font-size: 36px;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 12px;
+}
+
+.m3-feature-card h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.m3-feature-card p {
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+    line-height: 1.5;
+}
