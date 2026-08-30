@@ -1,20 +1,20 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCtb49oRNQ70h6qI6Xj5qlVS3qG1BV64Ls",
-  authDomain: "cofee-management-ae437.firebaseapp.com",
-  projectId: "cofee-management-ae437",
-  storageBucket: "cofee-management-ae437.firebasestorage.app",
-  messagingSenderId: "412796817583",
-  appId: "1:412796817583:web:ec419f63a5be9fddd1c45a",
-  measurementId: "G-YBBC6YRPLZ"
+  apiKey: "AIzaSyC3w2HuYbREpi05NPjm4W6vU9KPPipOV3w",
+  authDomain: "jsi15-2e42b.firebaseapp.com",
+  projectId: "jsi15-2e42b",
+  storageBucket: "jsi15-2e42b.firebasestorage.app",
+  messagingSenderId: "208898390659",
+  appId: "1:208898390659:web:fc0ff31e316cea071fb9b6",
+  measurementId: "G-FYTVXFB7X0",
 };
 
 var db;
 
 if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-    console.log("Firebase initialized successfully");
-    db = firebase.firestore();
+  firebase.initializeApp(firebaseConfig);
+  console.log("Firebase initialized successfully");
+  db = firebase.firestore();
 }
 
 console.log("Firebase inintialized:", firebase.app().name);
