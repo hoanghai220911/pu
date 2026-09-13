@@ -1,7 +1,5 @@
 // Cấu hình Cloudinary
-const CLOUD_NAME = "YOUR_CLOUD_NAME";
-const UPLOAD_PRESET = "YOUR_UNSIGNED_PRESET";
-const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+const IMAGE_SERVER_URL = "http://localhost:3000";
 
 let currentUser = null;
 
@@ -66,22 +64,21 @@ if (uploadForm) {
 
       // 1. Tải lên Cloudinary
       const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", UPLOAD_PRESET);
+      formData.append("image", file);
 
-      const res = await fetch(CLOUDINARY_URL, {
+      const res = await fetch(`${IMAGE_SERVER_URL}/upload`, {
         method: "POST",
-        body: formData,
-      });
+        body: formData,});
+
       const data = await res.json();
 
-      if (!data.secure_url) throw new Error("Upload Cloudinary thất bại!");
-
+      if (!data.url) throw new Error("Upload Cloudinary thất bại!");
+      alert("Thancong", data.url)
       // 2. Lưu Metadata vào Firestore
       await db.collection("picture").add({
         title: captionInput.value, // Lưu tiêu đề
         description: captionInput.value, // Lưu mô tả
-        img_url: data.secure_url, // Link từ Cloudinary
+        img_url: data.url, // Link từ Cloudinary
         is_public: true,
         state: "active",
         user_id: currentUser.uid,
