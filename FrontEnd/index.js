@@ -1,6 +1,6 @@
-const db = firebase.firestore();
 
-// Cấu hình Cloudinary (Thay thông tin của bạn vào đây)
+
+// Cấu hình Cloudinary
 const CLOUD_NAME = "YOUR_CLOUD_NAME"; 
 const UPLOAD_PRESET = "YOUR_UNSIGNED_PRESET";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
@@ -15,29 +15,37 @@ firebase.auth().onAuthStateChanged(async (user) => {
     const uploadContainer = document.getElementById('upload-container');
 
     if (user) {
-        // Kiểm tra tài khoản có bị khóa/cấm hay không
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        if (userDoc.exists && userDoc.data().isBanned) {
-            alert("Tài khoản của bạn tạm thời đã bị khóa bởi Quản trị viên!");
-            firebase.auth().signOut();
-            return;
-        }
-
         currentUser = user;
-        authActions.style.display = 'none';
-        userProfile.style.display = 'flex';
-        uploadContainer.style.display = 'block';
-        userEmailDisplay.textContent = user.email;
 
-        // Phân quyền hiển thị nút Admin
-        if (userDoc.exists && userDoc.data().role === 'admin') {
-            document.getElementById('admin-link').style.display = 'inline-flex';
+        // Bắt lỗi khi đọc tài khoản từ Firestore
+        try {
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists && userDoc.data().isBanned) {
+                alert("Tài khoản của bạn tạm thời đã bị khóa!");
+                firebase.auth().signOut();
+                return;
+            }
+
+            if (userDoc.exists && userDoc.data().role === 'admin') {
+                const adminLink = document.getElementById('admin-link');
+                if (adminLink) adminLink.style.display = 'inline-flex';
+            }
+        } catch (e) {
+            console.warn("Lưu ý: Không thể lấy dữ liệu user từ Firestore:", e);
         }
+
+        // Hiển thị giao diện Đã Đăng Nhập
+        if (authActions) authActions.style.display = 'none';
+        if (userProfile) userProfile.style.display = 'flex';
+        if (uploadContainer) uploadContainer.style.display = 'block';
+        if (userEmailDisplay) userEmailDisplay.textContent = user.email;
+
     } else {
+        // Giao diện Chưa Đăng Nhập
         currentUser = null;
-        authActions.style.display = 'flex';
-        userProfile.style.display = 'none';
-        uploadContainer.style.display = 'none';
+        if (authActions) authActions.style.display = 'flex';
+        if (userProfile) userProfile.style.display = 'none';
+        if (uploadContainer) uploadContainer.style.display = 'none';
     }
 });
 
@@ -67,9 +75,9 @@ if (uploadForm) {
             const res = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
             const data = await res.json();
 
-            if (!data.secure_url) throw new Error("Upload Cloudinary thất bại");
+            if (!data.secure_url) throw new Error("Upload Cloudinary thất bại!");
 
-            // 2. Lưu Metadata bài đăng vào Firestore
+            // 2. Lưu Metadata vào Firestore
             await db.collection('posts').add({
                 imageUrl: data.secure_url,
                 caption: captionInput.value,
@@ -94,11 +102,17 @@ if (uploadForm) {
 // Tải danh sách bài đăng ra Feed
 async function loadPhotos() {
     const photoFeed = document.getElementById('photo-feed');
+    if (!photoFeed) return;
     photoFeed.innerHTML = "<p>Đang tải dữ liệu...</p>";
 
     try {
         const snapshot = await db.collection('posts').orderBy('createdAt', 'desc').get();
         photoFeed.innerHTML = "";
+
+        if (snapshot.empty) {
+            photoFeed.innerHTML = "<p>Chưa có hình ảnh nào.</p>";
+            return;
+        }
 
         snapshot.forEach(doc => {
             const data = doc.data();
@@ -113,13 +127,17 @@ async function loadPhotos() {
         });
     } catch (err) {
         console.error("Lỗi lấy bài đăng:", err);
+        photoFeed.innerHTML = "<p>Chưa thể tải danh sách ảnh (Hãy kiểm tra Firestore Security Rules).</p>";
     }
 }
 
-// Chạy hàm nạp ảnh khi vào trang
+// Chạy nạp danh sách bài đăng
 loadPhotos();
 
 // Đăng xuất
-document.getElementById('btn-logout').addEventListener('click', () => {
-    firebase.auth().signOut().then(() => window.location.reload());
-});
+const btnLogout = document.getElementById('btn-logout');
+if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+        firebase.auth().signOut().then(() => window.location.reload());
+    });
+}

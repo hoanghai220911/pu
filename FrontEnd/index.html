@@ -19,61 +19,46 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="m3-dashboard-layout">
-        <!-- Top App Bar -->
-        <header class="m3-top-app-bar">
-            <div class="brand-info">
-                <span class="material-symbols-outlined brand-icon">photo_camera_back</span>
-                <div>
-                    <h1 class="m3-headline">Real Pictures</h1>
-                    <p class="m3-subhead">Stock Photo Community</p>
-                </div>
-            </div>
-
-            <div class="user-action-area">
-                <div id="auth-actions" class="auth-buttons-group" style="display: none;">
-                    <a href="./login.html" class="m3-button-secondary nav-btn">
-                        <span class="material-symbols-outlined">login</span>
-                        <span>Đăng nhập</span>
-                    </a>
-                    <a href="./signup.html" class="m3-button-primary nav-btn">
-                        <span class="material-symbols-outlined">person_add</span>
-                        <span>Đăng ký</span>
-                    </a>
-                </div>
-
-                <div id="user-profile" class="user-profile-box" style="display: none;">
-                    <span class="material-symbols-outlined account-icon">account_circle</span>
-                    <span id="user-email-display" class="user-email">...</span>
-                    <a href="./admin.html" id="admin-link" class="m3-button-secondary" style="display: none;">Admin</a>
-                    <button id="btn-logout" class="m3-button-secondary">
-                        <span class="material-symbols-outlined">logout</span>
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <main class="m3-main-content">
-            <!-- Upload Box (Chỉ hiện khi đã đăng nhập) -->
-            <div id="upload-container" class="m3-feature-card mb-24" style="display: none; margin-bottom: 30px;">
-                <h3 style="margin-bottom: 12px;">Chia sẻ bức ảnh của bạn</h3>
-                <form id="upload-form" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-                    <input type="text" id="img-caption" class="m3-text-field" placeholder="Mô tả bức ảnh..." style="flex: 1; min-width: 200px; height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--md-sys-color-outline);" required>
-                    <input type="file" id="img-file" accept="image/*" required style="color: #fff;">
-                    <button type="submit" id="btn-upload" class="m3-button-primary" style="height: 44px; padding: 0 20px;">
-                        <span class="material-symbols-outlined">upload</span>
-                        <span>Đăng ảnh</span>
-                    </button>
-                </form>
-            </div>
-
-            <!-- Photo Feed Gallery -->
-            <h2 class="welcome-title">Khám phá tư liệu ảnh</h2>
-            <div id="photo-feed" class="m3-grid">
-                <!-- Nội dung ảnh động từ Firestore -->
-            </div>
-        </main>
+    <header class="m3-top-app-bar">
+    <div class="brand-info">
+        <span class="material-symbols-outlined brand-icon">photo_camera_back</span>
+        <div>
+            <h1 class="m3-headline">Real Pictures</h1>
+            <p class="m3-subhead">Stock Photo Community</p>
+        </div>
     </div>
+
+    <div class="user-action-area">
+        <!-- Hiện khi chưa đăng nhập -->
+        <div id="auth-actions" class="auth-buttons-group" style="display: none;">
+            <a href="./login.html" class="m3-button-secondary nav-btn">
+                <span class="material-symbols-outlined">login</span>
+                <span>Đăng nhập</span>
+            </a>
+            <a href="./signup.html" class="m3-button-primary nav-btn">
+                <span class="material-symbols-outlined">person_add</span>
+                <span>Đăng ký</span>
+            </a>
+        </div>
+
+        <!-- Hiện khi đã đăng nhập -->
+        <div id="user-profile" class="user-profile-box" style="display: none; gap: 12px; align-items: center;">
+            <!-- Nút bật Modal/Form Đăng ảnh -->
+            <button id="btn-show-upload" class="m3-button-primary" onclick="document.getElementById('upload-container').scrollIntoView({behavior: 'smooth'})">
+                <span class="material-symbols-outlined">add_a_photo</span>
+                <span>Đăng ảnh</span>
+            </button>
+
+            <span class="material-symbols-outlined account-icon">account_circle</span>
+            <span id="user-email-display" class="user-email">...</span>
+            <a href="./admin.html" id="admin-link" class="m3-button-secondary" style="display: none;">Admin</a>
+            
+            <button id="btn-logout" class="m3-button-secondary" title="Đăng xuất">
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+        </div>
+    </div>
+</header>
 
     <script src="./index.js"></script>
 </body>
