@@ -20,46 +20,75 @@
 </head>
 <body>
     <header class="m3-top-app-bar">
-    <div class="brand-info">
-        <span class="material-symbols-outlined brand-icon">photo_camera_back</span>
-        <div>
-            <h1 class="m3-headline">Real Pictures</h1>
-            <p class="m3-subhead">Stock Photo Community</p>
-        </div>
-    </div>
-
-    <div class="user-action-area">
-        <!-- Hiện khi chưa đăng nhập -->
-        <div id="auth-actions" class="auth-buttons-group" style="display: none;">
-            <a href="./login.html" class="m3-button-secondary nav-btn">
-                <span class="material-symbols-outlined">login</span>
-                <span>Đăng nhập</span>
-            </a>
-            <a href="./signup.html" class="m3-button-primary nav-btn">
-                <span class="material-symbols-outlined">person_add</span>
-                <span>Đăng ký</span>
-            </a>
+        <div class="brand-info">
+            <span class="material-symbols-outlined brand-icon">photo_camera_back</span>
+            <div>
+                <h1 class="m3-headline">Real Pictures</h1>
+                <p class="m3-subhead">Stock Photo Community</p>
+            </div>
         </div>
 
-        <!-- Hiện khi đã đăng nhập -->
-        <div id="user-profile" class="user-profile-box" style="display: none; gap: 12px; align-items: center;">
-            <!-- Nút bật Modal/Form Đăng ảnh -->
-            <button id="btn-show-upload" class="m3-button-primary" onclick="document.getElementById('upload-container').scrollIntoView({behavior: 'smooth'})">
-                <span class="material-symbols-outlined">add_a_photo</span>
-                <span>Đăng ảnh</span>
-            </button>
+        <div class="user-action-area">
+            <!-- Hiện khi chưa đăng nhập -->
+            <div id="auth-actions" class="auth-buttons-group" style="display: none;">
+                <a href="./login.html" class="m3-button-secondary nav-btn">
+                    <span class="material-symbols-outlined">login</span>
+                    <span>Đăng nhập</span>
+                </a>
+                <a href="./signup.html" class="m3-button-primary nav-btn">
+                    <span class="material-symbols-outlined">person_add</span>
+                    <span>Đăng ký</span>
+                </a>
+            </div>
 
-            <span class="material-symbols-outlined account-icon">account_circle</span>
-            <span id="user-email-display" class="user-email">...</span>
-            <a href="./admin.html" id="admin-link" class="m3-button-secondary" style="display: none;">Admin</a>
-            
-            <button id="btn-logout" class="m3-button-secondary" title="Đăng xuất">
-                <span class="material-symbols-outlined">logout</span>
-            </button>
+            <!-- Hiện khi đã đăng nhập -->
+            <div id="user-profile" class="user-profile-box" style="display: none; gap: 12px; align-items: center;">
+                <!-- Nút cuộn xuống Form Đăng ảnh -->
+                <button id="btn-show-upload" class="m3-button-primary">
+                    <span class="material-symbols-outlined">add_a_photo</span>
+                    <span>Đăng ảnh</span>
+                </button>
+
+                <span class="material-symbols-outlined account-icon">account_circle</span>
+                <span id="user-email-display" class="user-email">...</span>
+                <a href="./admin.html" id="admin-link" class="m3-button-secondary" style="display: none;">Admin</a>
+                
+                <button id="btn-logout" class="m3-button-secondary" title="Đăng xuất">
+                    <span class="material-symbols-outlined">logout</span>
+                </button>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
+
+    <main style="max-width: 900px; margin: 24px auto; padding: 0 16px;">
+        <!-- KHU VỰC UPLOAD ẢNH (Khắc phục lỗi thiếu #upload-container) -->
+        <section id="upload-container" style="display: none; background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+            <h2 style="margin-top: 0;">Đăng bài mới</h2>
+            <form id="upload-form" style="display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                    <label for="img-file" style="display: block; margin-bottom: 4px; font-weight: 500;">Chọn hình ảnh:</label>
+                    <input type="file" id="img-file" accept="image/*" required>
+                </div>
+                <div>
+                    <label for="img-caption" style="display: block; margin-bottom: 4px; font-weight: 500;">Mô tả / Tiêu đề:</label>
+                    <input type="text" id="img-caption" placeholder="Nhập tiêu đề hoặc cảm nghĩ..." required style="width: 100%; padding: 8px; box-sizing: border-box;">
+                </div>
+                <button type="submit" id="btn-upload" class="m3-button-primary" style="align-self: flex-start;">
+                    Đăng ảnh
+                </button>
+            </form>
+        </section>
+
+        <!-- KHU VỰC HIỂN THỊ DANH SÁCH ẢNH (Khắc phục lỗi thiếu #photo-feed) -->
+        <section>
+            <h2>Bảng tin ảnh</h2>
+            <div id="photo-feed" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;">
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        </section>
+    </main>
 
     <script src="./index.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 </body>
 </html>

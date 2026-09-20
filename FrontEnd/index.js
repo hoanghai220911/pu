@@ -1,7 +1,18 @@
-// Cấu hình Cloudinary
-const IMAGE_SERVER_URL = "http://localhost:3000";
+// Cấu hình Cloudinary Backend Server
+const IMAGE_SERVER_URL = "http://localhost:5500";
 
 let currentUser = null;
+
+// Xử lý nút cuộn an toàn xuống khu vực Upload
+const btnShowUpload = document.getElementById("btn-show-upload");
+if (btnShowUpload) {
+  btnShowUpload.addEventListener("click", () => {
+    const uploadContainer = document.getElementById("upload-container");
+    if (uploadContainer) {
+      uploadContainer.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+}
 
 // Kiểm tra Auth State
 firebase.auth().onAuthStateChanged(async (user) => {
@@ -44,7 +55,6 @@ firebase.auth().onAuthStateChanged(async (user) => {
   }
 });
 
-// Xử lý Upload Ảnh lên Cloudinary -> Lưu Firestore
 const uploadForm = document.getElementById("upload-form");
 if (uploadForm) {
   uploadForm.addEventListener("submit", async (e) => {
@@ -58,54 +68,63 @@ if (uploadForm) {
     const file = fileInput.files[0];
     if (!file) return;
 
+    // Giới hạn ảnh dưới 1MB vì Firestore giới hạn 1MB/document
+    if (file.size > 1024 * 1024) {
+      return alert("Vui lòng chọn ảnh có dung lượng dưới 1MB!");
+    }
+
     try {
       btnUpload.disabled = true;
-      btnUpload.innerText = "Đang tải...";
+      btnUpload.innerText = "Đang xử lý...";
 
-      // 1. Tải lên Cloudinary
-      const formData = new FormData();
-      formData.append("image", file);
+      // 1. Đọc file sang chuỗi Base64
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
 
-      const res = await fetch(`${IMAGE_SERVER_URL}/upload`, {
-        method: "POST",
-        body: formData,});
+      reader.onload = async () => {
+        const base64DataUrl = reader.result;
 
-      const data = await res.json();
+        // 2. Lưu trực tiếp vào Firestore collection 'picture'
+        const docRef = await db.collection("picture").add({
+          title: captionInput.value,
+          description: captionInput.value,
+          img_url: base64DataUrl, // Lưu chuỗi Base64 thay vì link Storage
+          is_public: true,
+          state: "active",
+          user_id: currentUser.uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
 
-      if (!data.url) throw new Error("Upload Cloudinary thất bại!");
-      alert("Thancong", data.url)
-      // 2. Lưu Metadata vào Firestore
-      await db.collection("picture").add({
-        title: captionInput.value, // Lưu tiêu đề
-        description: captionInput.value, // Lưu mô tả
-        img_url: data.url, // Link từ Cloudinary
-        is_public: true,
-        state: "active",
-        user_id: currentUser.uid,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+        console.log("Document Key vừa tạo:", docRef.id);
+        alert(`Đăng ảnh thành công! Key ID: ${docRef.id}`);
+        
+        uploadForm.reset();
+        loadPhotos();
+        btnUpload.disabled = false;
+        btnUpload.innerText = "Đăng ảnh";
+      };
 
-      alert("Đăng ảnh thành công!");
-      uploadForm.reset();
-      loadPhotos();
+      reader.onerror = (err) => {
+        throw err;
+      };
     } catch (err) {
       console.error(err);
-      alert("Lỗi khi tải ảnh lên!");
-    } finally {
+      alert("Lỗi khi đăng ảnh: " + err.message);
       btnUpload.disabled = false;
       btnUpload.innerText = "Đăng ảnh";
     }
   });
 }
 
+// Đọc danh sách ảnh và lấy Key (doc.id) của từng Document
 async function loadPhotos() {
   const photoFeed = document.getElementById("photo-feed");
   if (!photoFeed) return;
   photoFeed.innerHTML = "<p>Đang tải dữ liệu...</p>";
 
   try {
-    // Lấy dữ liệu từ collection 'image'
-    const snapshot = await db.collection("image").get();
+    // Đã đồng bộ collection 'picture' (thay vì 'image')
+    const snapshot = await db.collection("picture").get();
     photoFeed.innerHTML = "";
 
     if (snapshot.empty) {
@@ -114,29 +133,37 @@ async function loadPhotos() {
     }
 
     snapshot.forEach((doc) => {
+      // doc.id chính là KEY của Firestore
+      const docKey = doc.id;
       const data = doc.data();
 
-      // Chỉ hiển thị những ảnh có is_public == true (nếu muốn)
       if (data.is_public !== false) {
         const card = document.createElement("div");
         card.className = "m3-feature-card";
+        card.style.background = "#fff";
+        card.style.padding = "12px";
+        card.style.borderRadius = "12px";
+        card.style.boxShadow = "0 1px 4px rgba(0,0,0,0.08)";
+
         card.innerHTML = `
-                    <img src="${data.img_url || "https://via.placeholder.com/400x200"}" alt="${data.title || "photo"}" style="width:100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 12px;">
-                    <h3 style="margin-bottom: 6px;">${data.title || "Chưa có tiêu đề"}</h3>
-                    <p style="color: #ccc; margin-bottom: 6px;">${data.description || "Không có mô tả"}</p>
-                    <p style="font-size: 12px; opacity: 0.7;">Người đăng: ${data.user_id || "Ẩn danh"}</p>
-                `;
+          <img src="${data.img_url || "https://via.placeholder.com/400x200"}" alt="${data.title || "photo"}" style="width:100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+          <h3 style="margin: 0 0 6px 0; font-size: 16px;">${data.title || "Chưa có tiêu đề"}</h3>
+          <p style="color: #666; margin: 0 0 6px 0; font-size: 14px;">${data.description || "Không có mô tả"}</p>
+          <div style="font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 6px; margin-top: 6px;">
+            <div>Người đăng: ${data.user_id || "Ẩn danh"}</div>
+            <div><strong>Key (ID):</strong> <code style="background:#f1f1f1; padding:2px 4px; border-radius:4px;">${docKey}</code></div>
+          </div>
+        `;
         photoFeed.appendChild(card);
       }
     });
   } catch (err) {
     console.error("Lỗi lấy bài đăng:", err);
-    photoFeed.innerHTML =
-      "<p>Lỗi khi tải dữ liệu từ Firestore. Vui lòng kiểm tra lại Rules!</p>";
+    photoFeed.innerHTML = "<p>Lỗi khi tải dữ liệu từ Firestore. Vui lòng kiểm tra lại Rules!</p>";
   }
 }
 
-// Gọi hàm nạp ảnh khi trang index.html chạy
+// Gọi hàm nạp ảnh khi trang chạy
 loadPhotos();
 
 // Đăng xuất
