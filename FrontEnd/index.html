@@ -23,6 +23,8 @@
     <script src="./firebase-config.js"></script>
 
     <link rel="stylesheet" href="./style.css" />
+
+    <script src="https://kit.fontawesome.com/b47a1c1ea4.js"></script>
   </head>
   <body>
     <div class="m3-dashboard-layout">
@@ -116,11 +118,21 @@
             </div>
 
             <div class="form-group">
-              <label for="img-caption">Mô tả / Tiêu đề:</label>
+              <label for="img-caption">Tiêu đề:</label>
               <input
                 type="text"
                 id="img-caption"
-                placeholder="Nhập tiêu đề hoặc cảm nghĩ..."
+                placeholder="Nhập tiêu đề ...."
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="img-description">Mô tả:</label>
+              <input
+                type="text"
+                id="img-description"
+                placeholder="Nhập cảm nghĩ..."
                 required
               />
             </div>
@@ -262,6 +274,15 @@
       <!-- KHU VỰC HIỂN THỊ DANH SÁCH ẢNH (Khắc phục lỗi thiếu #photo-feed) -->
       <section>
         <h2>Bảng tin ảnh</h2>
+        <!-- Tab lọc ảnh -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <button id="tab-community" class="btn-primary" onclick="switchTab('community')" style="padding: 8px 20px;">
+            <i class="fa-solid fa-globe"></i> Cộng đồng
+          </button>
+          <button id="tab-mine" class="btn-secondary" onclick="switchTab('mine')" style="padding: 8px 20px;">
+            <i class="fa-solid fa-user"></i> Của tôi
+          </button>
+        </div>
         <div
           id="photo-feed"
           style="

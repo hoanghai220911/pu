@@ -1,5 +1,5 @@
 // Cấu hình Cloudinary Backend Server
-const IMAGE_SERVER_URL = "http://localhost:5500";
+const IMAGE_SERVER_URL = "http://localhost:5000";
 
 let currentUser = null;
 
@@ -26,9 +26,9 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
     // Bắt lỗi khi đọc tài khoản từ Firestore
     try {
-      const userDoc = await db.collection("users").doc(user.uid).get();
-      if (userDoc.exists && userDoc.data().isBanned) {
-        alert("Tài khoản của bạn tạm thời đã bị khóa!");
+      const userDoc = await db.collection(COLLECTION_USERS).doc(user.uid).get();
+      if (userDoc.exists && userDoc.data().isActive === false) {
+        alert("Tài khoản của bạn đã bị khóa!");
         firebase.auth().signOut();
         return;
       }
@@ -63,50 +63,50 @@ if (uploadForm) {
 
     const fileInput = document.getElementById("img-file");
     const captionInput = document.getElementById("img-caption");
+    const descriptionInput = document.getElementById("img-description");
     const btnUpload = document.getElementById("btn-upload");
 
     const file = fileInput.files[0];
     if (!file) return;
 
-    // Giới hạn ảnh dưới 1MB vì Firestore giới hạn 1MB/document
-    if (file.size > 1024 * 1024) {
-      return alert("Vui lòng chọn ảnh có dung lượng dưới 1MB!");
-    }
-
     try {
       btnUpload.disabled = true;
-      btnUpload.innerText = "Đang xử lý...";
+      btnUpload.innerText = "Đang tải lên...";
 
-      // 1. Đọc file sang chuỗi Base64
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
+      // 1. Gửi file lên Backend -> Backend upload lên Cloudinary
+      const formData = new FormData();
+      formData.append("image", file);
 
-      reader.onload = async () => {
-        const base64DataUrl = reader.result;
+      const response = await fetch(`${IMAGE_SERVER_URL}/api/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
-        // 2. Lưu trực tiếp vào Firestore collection 'picture'
-        const docRef = await db.collection("image").add({
-          title: captionInput.value,
-          description: captionInput.value,
-          img_url: base64DataUrl, // Lưu chuỗi Base64 thay vì link Storage
-          is_public: true,
-          state: "active",
-          user_id: currentUser.uid,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Upload thất bại!");
+      }
 
-        console.log("Document Key vừa tạo:", docRef.id);
-        alert(`Đăng ảnh thành công! Key ID: ${docRef.id}`);
+      // 2. Lưu link ảnh Cloudinary vào Firestore collection 'image'
+      const docRef = await db.collection(COLLECTION_IMAGE).add({
+        title: captionInput.value,
+        description: descriptionInput.value,
+        img_url: result.url,
+        public_id: result.public_id, // lưu lại để xóa ảnh trên Cloudinary khi cần
+        is_public: true,
+        state: "active",
+        user_id: currentUser.uid,
+        user_email: currentUser.email, // lưu thêm email để hiển thị
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
 
-        uploadForm.reset();
-        loadPhotos();
-        btnUpload.disabled = false;
-        btnUpload.innerText = "Đăng ảnh";
-      };
+      console.log("Document Key vừa tạo:", docRef.id);
+      alert("Đăng ảnh thành công!");
 
-      reader.onerror = (err) => {
-        throw err;
-      };
+      uploadForm.reset();
+      loadPhotos();
+      btnUpload.disabled = false;
+      btnUpload.innerText = "Đăng ảnh";
     } catch (err) {
       console.error(err);
       alert("Lỗi khi đăng ảnh: " + err.message);
@@ -114,6 +114,17 @@ if (uploadForm) {
       btnUpload.innerText = "Đăng ảnh";
     }
   });
+}
+
+// Tab hiện tại: 'community' (tất cả ảnh) hoặc 'mine' (chỉ ảnh của tôi)
+let currentTab = 'community';
+
+// Chuyển đổi tab Cộng đồng / Của tôi
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-community').className = tab === 'community' ? 'btn-primary' : 'btn-secondary';
+  document.getElementById('tab-mine').className = tab === 'mine' ? 'btn-primary' : 'btn-secondary';
+  loadPhotos();
 }
 
 // Đọc danh sách ảnh và lấy Key (doc.id) của từng Document
@@ -124,8 +135,15 @@ async function loadPhotos() {
 
   try {
     // Đã đồng bộ collection 'picture' (thay vì 'image')
-    const snapshot = await db.collection("image").get();
+    const snapshot = await db.collection(COLLECTION_IMAGE).get();
     photoFeed.innerHTML = "";
+
+    // Lấy danh sách users để map uid -> email
+    const usersSnapshot = await db.collection(COLLECTION_USERS).get();
+    const usersMap = {};
+    usersSnapshot.forEach(u => {
+      usersMap[u.id] = u.data().email;
+    });
 
     if (snapshot.empty) {
       photoFeed.innerHTML = "<p>Chưa có hình ảnh nào trong thư viện.</p>";
@@ -136,6 +154,12 @@ async function loadPhotos() {
       // doc.id chính là KEY của Firestore
       const docKey = doc.id;
       const data = doc.data();
+      const userEmail = usersMap[data.user_id] || data.user_email || data.user_id || "Ẩn danh";
+
+      // Lọc theo tab: 'mine' chỉ hiện ảnh của user hiện tại
+      if (currentTab === 'mine') {
+        if (!currentUser || data.user_id !== currentUser.uid) return;
+      }
 
       if (data.is_public !== false) {
         const card = document.createElement("div");
@@ -150,7 +174,7 @@ async function loadPhotos() {
           <h3 style="margin: 0 0 6px 0; font-size: 16px;">${data.title || "Chưa có tiêu đề"}</h3>
           <p style="color: #666; margin: 0 0 6px 0; font-size: 14px;">${data.description || "Không có mô tả"}</p>
           <div style="font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 6px; margin-top: 6px;">
-            <div>Người đăng: ${data.user_id || "Ẩn danh"}</div>
+            <div style="margin: 5px 0;">Người đăng: ${userEmail}</div>
             <div><strong>Key (ID):</strong> <code style="background:#f1f1f1; padding:2px 4px; border-radius:4px;">${docKey}</code></div>
           </div>
         `;

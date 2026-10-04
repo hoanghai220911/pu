@@ -38,6 +38,15 @@ btnSignUp.addEventListener("click", async (e) => {
     .createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       var user = userCredential.user;
+
+      // Tạo user-profile trên Firestore, mặc định tài khoản được kích hoạt
+      return db.collection(COLLECTION_USERS).doc(user.uid).set({
+        email: user.email,
+        isActive: true,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    })
+    .then(() => {
       alert("Đăng ký tài khoản Real Pictures thành công! Chuyển hướng đến trang đăng nhập...");
       
       return firebase.auth().signOut().then(() => {
