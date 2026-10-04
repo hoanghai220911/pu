@@ -33,7 +33,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
         return;
       }
 
-      if (userDoc.exists && userDoc.data().role === "admin") {
+      if (user.email === "admin@hoanghai.com") {
         const adminLink = document.getElementById("admin-link");
         if (adminLink) adminLink.style.display = "inline-flex";
       }

@@ -1,14 +1,13 @@
 const db = firebase.firestore();
 
-// Kiểm tra quyền Admin
+// Kiểm tra quyền Admin (dựa trên email)
 firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
         window.location.href = "./login.html";
         return;
     }
 
-    const userDoc = await db.collection('users').doc(user.uid).get();
-    if (!userDoc.exists || userDoc.data().role !== 'admin') {
+    if (user.email !== 'admin@hoanghai.com') {
         alert("Bạn không có quyền truy cập trang quản trị!");
         window.location.href = "./index.html";
         return;

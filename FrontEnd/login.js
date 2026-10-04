@@ -4,7 +4,12 @@ let currentUser = null;
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         currentUser = user;
-        window.location.href = "./index.html"; 
+        // Nếu là tài khoản admin thì chuyển thẳng tới trang quản trị
+        if (user.email === 'admin@hoanghai.com') {
+            window.location.href = "./admin.html";
+        } else {
+            window.location.href = "./index.html";
+        }
     } 
 });
 
@@ -16,7 +21,11 @@ btnLogin.addEventListener("click", async (e) => {
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             alert("Đăng nhập thành công! Chào mừng tới Real Pictures.");
-            window.location.href = "./index.html";
+            if (userCredential.user.email === 'admin@hoanghai.com') {
+                window.location.href = "./admin.html";
+            } else {
+                window.location.href = "./index.html";
+            }
         })
         .catch((error) => {
             console.error("Lỗi đăng nhập:", error);
