@@ -85,7 +85,11 @@ if (uploadForm) {
         const base64DataUrl = reader.result;
 
         // 2. Lưu trực tiếp vào Firestore collection 'picture'
+<<<<<<< Updated upstream
         const docRef = await db.collection("picture").add({
+=======
+        const docRef = await db.collection("image").add({
+>>>>>>> Stashed changes
           title: captionInput.value,
           description: captionInput.value,
           img_url: base64DataUrl, // Lưu chuỗi Base64 thay vì link Storage
@@ -97,6 +101,7 @@ if (uploadForm) {
 
         console.log("Document Key vừa tạo:", docRef.id);
         alert(`Đăng ảnh thành công! Key ID: ${docRef.id}`);
+<<<<<<< Updated upstream
         
         uploadForm.reset();
         loadPhotos();
@@ -104,6 +109,15 @@ if (uploadForm) {
         btnUpload.innerText = "Đăng ảnh";
       };
 
+=======
+
+        uploadForm.reset();
+        loadPhotos();
+        btnUpload.disabled = false;
+        btnUpload.innerText = "Đăng ảnh";
+      };
+
+>>>>>>> Stashed changes
       reader.onerror = (err) => {
         throw err;
       };
@@ -124,7 +138,11 @@ async function loadPhotos() {
 
   try {
     // Đã đồng bộ collection 'picture' (thay vì 'image')
+<<<<<<< Updated upstream
     const snapshot = await db.collection("picture").get();
+=======
+    const snapshot = await db.collection("image").get();
+>>>>>>> Stashed changes
     photoFeed.innerHTML = "";
 
     if (snapshot.empty) {
@@ -175,4 +193,34 @@ if (btnLogout) {
       .signOut()
       .then(() => window.location.reload());
   });
+<<<<<<< Updated upstream
 }
+=======
+}
+
+const modalOverlay = document.getElementById("upload-modal-overlay");
+const openBtn = document.getElementById("open-upload-btn");
+const closeBtn = document.getElementById("close-modal-btn");
+const cancelBtn = document.getElementById("cancel-btn");
+
+
+// Hàm mở Popup
+openBtn.addEventListener("click", () => {
+  modalOverlay.style.display = "flex";
+});
+
+// Hàm đóng Popup
+const closeModal = () => {
+  modalOverlay.style.display = "none";
+};
+
+closeBtn.addEventListener("click", closeModal);
+cancelBtn.addEventListener("click", closeModal);
+
+// Đóng Popup khi click ra ngoài vùng trắng nội dung
+modalOverlay.addEventListener("click", (e) => {
+  if (e.target === modalOverlay) {
+    closeModal();
+  }
+});
+>>>>>>> Stashed changes

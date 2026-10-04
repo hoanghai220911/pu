@@ -368,3 +368,51 @@ body {
     color: var(--md-sys-color-on-surface-variant);
     line-height: 1.5;
 }
+
+#chatBtn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+
+    width: 60px;
+    height: 60px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #3157e8;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,.2);
+    z-index: 1000;
+}
+
+.chatbox {
+    position: fixed;
+    right: 20px;
+    bottom: 90px;
+
+    width: 380px;
+    height: 550px;
+
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,.25);
+
+    display: none;
+    z-index: 999;
+}
+
+.chatbox.show {
+    display: block;
+}
+
+.chatbox iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
