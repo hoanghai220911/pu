@@ -1,4 +1,3 @@
-const db = firebase.firestore();
 const IMAGE_SERVER_URL = "http://localhost:3900";
 
 // Kiểm tra quyền Admin (dựa trên email)
