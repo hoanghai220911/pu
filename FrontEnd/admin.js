@@ -7,7 +7,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
         return;
     }
 
-    if (user.email !== 'admin@hoanghai.com') {
+    if (user.email !== 'xbuithimy@gmail.com') {
         alert("Bạn không có quyền truy cập trang quản trị!");
         window.location.href = "./index.html";
         return;

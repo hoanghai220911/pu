@@ -4,6 +4,127 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Real Pictures - Trang chủ</title>
+    <style>
+      /* Nền mờ phủ toàn màn hình */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+      }
+
+      /* Khung nội dung Popup */
+      .modal-card {
+        position: relative;
+        background: #fff;
+        padding: 24px;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 480px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        animation: popupFadeIn 0.2s ease-out;
+      }
+
+      @keyframes popupFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: transparent;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+        line-height: 1;
+      }
+
+      .modal-title {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 1.25rem;
+        color: #1a1a1a;
+      }
+
+      #upload-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #333;
+        font-size: 0.9rem;
+      }
+
+      .form-group input[type="text"],
+      .form-group input[type="file"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 0.95rem;
+      }
+
+      .form-group input[type="text"]:focus {
+        outline: none;
+        border-color: #0066cc;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .btn-primary {
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .btn-secondary {
+        background-color: #f0f0f0;
+        color: #333;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .btn-primary:hover {
+        background-color: #0052a3;
+      }
+      .btn-secondary:hover {
+        background-color: #e0e0e0;
+      }
+    </style>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,275 +149,175 @@
   </head>
   <body>
     <div class="m3-dashboard-layout">
-    <header class="m3-top-app-bar">
-      <div class="brand-info">
-        <span class="material-symbols-outlined brand-icon"
-          >photo_camera_back</span
-        >
-        <div>
-          <h1 class="m3-headline">Real Pictures</h1>
-          <p class="m3-subhead">Stock Photo Community</p>
-        </div>
-      </div>
-
-      <div class="user-action-area">
-        <!-- Hiện khi chưa đăng nhập -->
-        <div id="auth-actions" class="auth-buttons-group" style="display: none">
-          <a href="./login.html" class="m3-button-secondary nav-btn">
-            <span class="material-symbols-outlined">login</span>
-            <span>Đăng nhập</span>
-          </a>
-          <a href="./signup.html" class="m3-button-primary nav-btn">
-            <span class="material-symbols-outlined">person_add</span>
-            <span>Đăng ký</span>
-          </a>
+      <header class="m3-top-app-bar">
+        <div class="brand-info">
+          <span class="material-symbols-outlined brand-icon"
+            >photo_camera_back</span
+          >
+          <div>
+            <h1 class="m3-headline">Real Pictures</h1>
+            <p class="m3-subhead">Stock Photo Community</p>
+          </div>
         </div>
 
-        <!-- Hiện khi đã đăng nhập -->
-        <div
-          id="user-profile"
-          class="user-profile-box"
-          style="display: none; gap: 12px; align-items: center"
-        >
-          <!-- Nút bật Modal/Form Đăng ảnh -->
-          <button
-            type="button"
-            id="open-upload-btn"
-            class="m3-button-primary"
-            onclick="
-              document
-                .getElementById('upload-container')
-                .scrollIntoView({ behavior: 'smooth' })
+        <div class="user-action-area">
+          <!-- Hiện khi chưa đăng nhập -->
+          <div
+            id="auth-actions"
+            class="auth-buttons-group"
+            style="display: none"
+          >
+            <a href="./login.html" class="m3-button-secondary nav-btn">
+              <span class="material-symbols-outlined">login</span>
+              <span>Đăng nhập</span>
+            </a>
+            <a href="./signup.html" class="m3-button-primary nav-btn">
+              <span class="material-symbols-outlined">person_add</span>
+              <span>Đăng ký</span>
+            </a>
+          </div>
+
+          <!-- Hiện khi đã đăng nhập -->
+          <div
+            id="user-profile"
+            class="user-profile-box"
+            style="display: none; gap: 12px; align-items: center"
+          >
+            <!-- Nút bật Modal/Form Đăng ảnh -->
+            <button
+              type="button"
+              id="open-upload-btn"
+              class="m3-button-primary"
+              onclick="
+                document
+                  .getElementById('upload-container')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+              style="margin-top: 5px; margin-bottom: 5px; padding-left: 15px; padding-right: 15px"
+            >
+              <span class="material-symbols-outlined">add_a_photo</span>
+              <span>Đăng ảnh</span>
+            </button>
+
+            <span class="material-symbols-outlined account-icon"
+              >account_circle</span
+            >
+            <span id="user-email-display" class="user-email">...</span>
+            <a
+              href="./admin.html"
+              id="admin-link"
+              class="m3-button-secondary"
+              style="display: none"
+              >Admin</a
+            >
+
+            <button
+              id="btn-logout"
+              class="m3-button-secondary"
+              title="Đăng xuất"
+            >
+              <span class="material-symbols-outlined">logout</span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <main style="max-width: 100%">
+        <!-- KHU VỰC UPLOAD ẢNH (Khắc phục lỗi thiếu #upload-container) -->
+
+        <!-- KHU VỰC HIỂN THỊ DANH SÁCH ẢNH (Khắc phục lỗi thiếu #photo-feed) -->
+        <section>
+          <div>
+            <h2 style="
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            margin-bottom: 15px;"
+            >Bảng tin ảnh</h2>
+            <!-- Tab lọc ảnh -->
+            <div style="display: flex; gap: 8px; margin-bottom: 50px; justify-content: center; align-items: center;">
+              <button
+                id="tab-community"
+                class="btn-primary"
+                onclick="switchTab('community')"
+                style="padding: 8px 20px; font-weight: bold"
+              >
+                <i class="fa-solid fa-globe"></i> Cộng đồng
+              </button>
+              <button
+                id="tab-mine"
+                class="btn-secondary"
+                onclick="switchTab('mine')"
+                style="padding: 8px 20px; font-weight: bold"
+              >
+                <i class="fa-solid fa-user"></i> Của tôi
+              </button>
+            </div>
+          </div>
+          <div
+            id="photo-feed"
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+              gap: 16px;
             "
           >
-            <span class="material-symbols-outlined">add_a_photo</span>
-            <span>Đăng ảnh</span>
-          </button>
-
-          <span class="material-symbols-outlined account-icon"
-            >account_circle</span
-          >
-          <span id="user-email-display" class="user-email">...</span>
-          <a
-            href="./admin.html"
-            id="admin-link"
-            class="m3-button-secondary"
-            style="display: none"
-            >Admin</a
-          >
-
-          <button id="btn-logout" class="m3-button-secondary" title="Đăng xuất">
-            <span class="material-symbols-outlined">logout</span>
-          </button>
-        </div>
-      </div>
-    </header>
-    <main style="max-width: 900px; margin: 24px auto; padding: 0 16px">
-      <!-- KHU VỰC UPLOAD ẢNH (Khắc phục lỗi thiếu #upload-container) -->
-      <div
-        id="upload-modal-overlay"
-        class="modal-overlay"
-        style="display: none"
-      >
-        <section id="upload-container" class="modal-card">
-          <!-- Nút đóng Popup -->
-          <button
-            type="button"
-            id="close-modal-btn"
-            class="close-btn"
-            aria-label="Đóng"
-          >
-            &times;
-          </button>
-
-          <h2 class="modal-title">Đăng bài mới</h2>
-
-          <form id="upload-form">
-            <div class="form-group">
-              <label for="img-file">Chọn hình ảnh:</label>
-              <input type="file" id="img-file" accept="image/*" required />
-            </div>
-
-            <div class="form-group">
-              <label for="img-caption">Tiêu đề:</label>
-              <input
-                type="text"
-                id="img-caption"
-                placeholder="Nhập tiêu đề ...."
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="img-description">Mô tả:</label>
-              <input
-                type="text"
-                id="img-description"
-                placeholder="Nhập cảm nghĩ..."
-                required
-              />
-            </div>
-
-            <div class="modal-actions">
-              <button type="button" id="cancel-btn" class="btn-secondary">
-                Hủy
-              </button>
-              <button type="submit" id="btn-upload" class="btn-primary">
-                Đăng ảnh
-              </button>
-            </div>
-          </form>
+            <p>Đang tải dữ liệu...</p>
+          </div>
         </section>
-      </div>
-
-      <style>
-        /* Nền mờ phủ toàn màn hình */
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          background-color: rgba(0, 0, 0, 0.5);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 1000;
-          backdrop-filter: blur(4px);
-        }
-
-        /* Khung nội dung Popup */
-        .modal-card {
-          position: relative;
-          background: #fff;
-          padding: 24px;
-          border-radius: 16px;
-          width: 90%;
-          max-width: 480px;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-          animation: popupFadeIn 0.2s ease-out;
-        }
-
-        @keyframes popupFadeIn {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        .close-btn {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          background: transparent;
-          border: none;
-          font-size: 24px;
-          cursor: pointer;
-          color: #666;
-          line-height: 1;
-        }
-
-        .modal-title {
-          margin-top: 0;
-          margin-bottom: 20px;
-          font-size: 1.25rem;
-          color: #1a1a1a;
-        }
-
-        #upload-form {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        .form-group label {
-          display: block;
-          margin-bottom: 6px;
-          font-weight: 500;
-          color: #333;
-          font-size: 0.9rem;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="file"] {
-          width: 100%;
-          padding: 10px 12px;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          box-sizing: border-box;
-          font-size: 0.95rem;
-        }
-
-        .form-group input[type="text"]:focus {
-          outline: none;
-          border-color: #0066cc;
-        }
-
-        .modal-actions {
-          display: flex;
-          justify-content: flex-end;
-          gap: 8px;
-          margin-top: 12px;
-        }
-
-        .btn-primary {
-          background-color: #0066cc;
-          color: white;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 8px;
-          font-weight: 500;
-          cursor: pointer;
-        }
-
-        .btn-secondary {
-          background-color: #f0f0f0;
-          color: #333;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 8px;
-          font-weight: 500;
-          cursor: pointer;
-        }
-
-        .btn-primary:hover {
-          background-color: #0052a3;
-        }
-        .btn-secondary:hover {
-          background-color: #e0e0e0;
-        }
-      </style>
-
-      <!-- KHU VỰC HIỂN THỊ DANH SÁCH ẢNH (Khắc phục lỗi thiếu #photo-feed) -->
-      <section>
-        <h2>Bảng tin ảnh</h2>
-        <!-- Tab lọc ảnh -->
-        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-          <button id="tab-community" class="btn-primary" onclick="switchTab('community')" style="padding: 8px 20px;">
-            <i class="fa-solid fa-globe"></i> Cộng đồng
-          </button>
-          <button id="tab-mine" class="btn-secondary" onclick="switchTab('mine')" style="padding: 8px 20px;">
-            <i class="fa-solid fa-user"></i> Của tôi
-          </button>
-        </div>
-        <div
-          id="photo-feed"
-          style="
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 16px;
-          "
-        >
-          <p>Đang tải dữ liệu...</p>
-        </div>
-      </section>
-    </main>
+      </main>
     </div>
 
+    <div id="upload-modal-overlay" class="modal-overlay" style="display: none">
+      <section id="upload-container" class="modal-card">
+        <!-- Nút đóng Popup -->
+        <button
+          type="button"
+          id="close-modal-btn"
+          class="close-btn"
+          aria-label="Đóng"
+        >
+          &times;
+        </button>
+
+        <h2 class="modal-title">Đăng bài mới</h2>
+
+        <form id="upload-form">
+          <div class="form-group">
+            <label for="img-file">Chọn hình ảnh:</label>
+            <input type="file" id="img-file" accept="image/*" required />
+          </div>
+
+          <div class="form-group">
+            <label for="img-caption">Tiêu đề:</label>
+            <input
+              type="text"
+              id="img-caption"
+              placeholder="Nhập tiêu đề ...."
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="img-description">Mô tả:</label>
+            <input
+              type="text"
+              id="img-description"
+              placeholder="Nhập cảm nghĩ..."
+              required
+            />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="cancel-btn" class="btn-secondary">
+              Hủy
+            </button>
+            <button type="submit" id="btn-upload" class="btn-primary">
+              Đăng ảnh
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
 
     <button id="chatBtn">💬</button>
     <div id="chatBox" class="chatbox">

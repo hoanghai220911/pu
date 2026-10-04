@@ -33,7 +33,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
         return;
       }
 
-      if (user.email === "admin@hoanghai.com") {
+      if (user.email === "xbuithimy@gmail.com") {
         const adminLink = document.getElementById("admin-link");
         if (adminLink) adminLink.style.display = "inline-flex";
       }
@@ -164,7 +164,7 @@ async function loadPhotos() {
       if (data.is_public !== false) {
         const card = document.createElement("div");
         card.className = "m3-feature-card";
-        card.style.background = "#fff";
+        card.style.background = "#222428";
         card.style.padding = "12px";
         card.style.borderRadius = "12px";
         card.style.boxShadow = "0 1px 4px rgba(0,0,0,0.08)";
@@ -175,7 +175,7 @@ async function loadPhotos() {
           <p style="color: #666; margin: 0 0 6px 0; font-size: 14px;">${data.description || "Không có mô tả"}</p>
           <div style="font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 6px; margin-top: 6px;">
             <div style="margin: 5px 0;">Người đăng: ${userEmail}</div>
-            <div><strong>Key (ID):</strong> <code style="background:#f1f1f1; padding:2px 4px; border-radius:4px;">${docKey}</code></div>
+            <div><strong>Key (ID):</strong> <code style="background:#121212; padding:2px 4px; border-radius:4px;">${docKey}</code></div>
           </div>
         `;
         photoFeed.appendChild(card);
